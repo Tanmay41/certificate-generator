@@ -5,13 +5,14 @@ import { auth } from '../../firebase-config';
 import { db } from '../../firebase-config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-import { CirclePlus } from "lucide-react"
+import { CirclePlus, List, Grid } from "lucide-react"
 
 import CertificateCard from './CertificateCard';
 
 function Home({ isAdmin }) {
   const navigate = useNavigate();
   const [certificates, setCertificates] = useState([]);
+  const [viewMode, setViewMode] = useState('grid');
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -43,33 +44,55 @@ function Home({ isAdmin }) {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="flex justify-between items-center p-4 mx-4 mt-5 rounded-lg shadow-md bg-white">
-        <h1 className="text-3xl font-bold">My Certificates</h1>
-        <div className="flex items-center gap-4">
+      <div className="flex flex-col sm:flex-row justify-between items-center p-4 mx-2 sm:mx-4 mt-5 rounded-lg shadow-md bg-white">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-4 sm:mb-0">My Certificates</h1>
+        <div className="flex flex-col sm:flex-row items-center gap-4">
           {isAdmin && (
-            <Link to="/admin/certificates" className="bg-black text-white font-bold py-2 px-4 rounded transition duration-300">
+            <Link to="/admin/certificates" className="w-full sm:w-auto bg-black text-white font-bold py-2 px-4 rounded transition duration-300 text-center">
               Admin Panel
             </Link>
           )}
-          <button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300">
+          <button onClick={handleLogout} className="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300">
             Logout
           </button>
         </div>
       </div>
       <main>
-        <div className="py-6 sm:px-6 lg:px-8">
-          <div className="px-4 py-6 sm:px-0">
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-              {certificates.map(certificate => (
-                <CertificateCard key={certificate.id} certificate={certificate} />
-              ))}
-              <Link to="/certificate/new" className="flex items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
-                <div className="text-center">
-                  <CirclePlus size={200} color='#808080' strokeWidth={0.5} />
-                  <div className="font-semibold text-gray-700">Create New Certificate</div>
-                </div>
+        <div className="py-6 px-2 sm:px-6 lg:px-8">
+          <div className="px-2 sm:px-4 py-6 sm:px-0">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+              <div className="flex space-x-2 mb-4 sm:mb-0">
+                <button
+                  onClick={() => setViewMode('list')}
+                  className={`p-2 rounded ${viewMode === 'list' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600'}`}
+                >
+                  <List size={20} />
+                </button>
+                <button
+                  onClick={() => setViewMode('grid')}
+                  className={`p-2 rounded ${viewMode === 'grid' ? 'bg-indigo-600 text-white' : 'bg-white text-gray-600'}`}
+                >
+                  <Grid size={20} />
+                </button>
+              </div>
+              <Link to="/certificate/new" className="w-full sm:w-auto bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300 flex items-center justify-center">
+                <CirclePlus size={20} className="mr-2" />
+                Create New Certificate
               </Link>
             </div>
+            {viewMode === 'list' ? (
+              <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                {certificates.map(certificate => (
+                  <CertificateCard key={certificate.id} certificate={certificate} list={true} />
+                ))}
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+                {certificates.map(certificate => (
+                  <CertificateCard key={certificate.id} certificate={certificate} list={false} />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </main>
