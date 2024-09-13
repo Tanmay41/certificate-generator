@@ -1,24 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
+import Login from './componets/Login';
+import Home from './componets/home/Home';
+import Certificate from './componets/certificate/CreateCertificate';
+import EditCertificate from './componets/certificate/EditCertificate';
+import Certificates from './componets/admin/certificates';
+import { auth } from './firebase-config';
+import { onAuthStateChanged } from 'firebase/auth';
+import admins from './admins.json';
 
 function App() {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      setUser(currentUser);
+      setIsAdmin(admins.admins === currentUser?.email);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App font-clash-display">
+        <Routes>
+          <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
+          <Route path="/" element={user ? <Home isAdmin={isAdmin} /> : <Navigate to="/login" />} />
+          <Route path="/certificate/new" element={user ? <Certificate /> : <Navigate to="/login" />} />
+          <Route path="/certificate/:id" element={user ? <EditCertificate /> : <Navigate to="/login" />} />
+          <Route path="/admin">
+            <Route path="certificates" element={isAdmin ? <Certificates /> : <Navigate to="/" />} />
+          </Route>
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
