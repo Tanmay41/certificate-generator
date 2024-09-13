@@ -34,8 +34,8 @@ function App() {
         <Routes>
           <Route path="/login" element={!user ? <Login /> : <Navigate to="/" />} />
           <Route path="/" element={user ? <Home isAdmin={isAdmin} /> : <Navigate to="/login" />} />
-          <Route path="/certificate/new" element={user ? <Certificate /> : <Navigate to="/login" />} />
-          <Route path="/certificate/:id" element={user ? <EditCertificate /> : <Navigate to="/login" />} />
+          <Route path="/certificate/new" element={user ? <Certificate isAdmin={isAdmin} /> : <Navigate to="/login" />} />
+          <Route path="/certificate/:id" element={user ? <EditCertificate isAdmin={isAdmin} /> : <Navigate to="/login" />} />
           <Route path="/admin">
             <Route path="certificates" element={isAdmin ? <Certificates /> : <Navigate to="/" />} />
           </Route>

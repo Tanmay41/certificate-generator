@@ -3,6 +3,7 @@ import { db } from '../../firebase-config';
 import { collection, getDocs } from 'firebase/firestore';
 import CertificateCard from '../home/CertificateCard';
 import { Link } from 'react-router-dom';
+import { CirclePlus } from "lucide-react";
 
 const Certificates = () => {
   const [certificates, setCertificates] = useState([]);
@@ -33,13 +34,19 @@ const Certificates = () => {
           <button onClick={handleLogout} className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300">
             Logout
           </button>
-          </div>
+        </div>
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6">
         {certificates.map(certificate => (
-            <CertificateCard key={certificate.id} certificate={{id: "/admin/certificate/" + certificate.id, ...certificate}} />
+            <CertificateCard key={certificate.id} certificate={{id: "/admin/certificate/" + certificate.id, ...certificate}} isAdmin={true} />
         ))}
+        <Link to="/certificate/new" className="flex items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+          <div className="text-center">
+            <CirclePlus size={200} color='#808080' strokeWidth={0.5} />
+            <div className="font-semibold text-gray-700">Create New Certificate</div>
+          </div>
+        </Link>
       </div>
     </div>
   );

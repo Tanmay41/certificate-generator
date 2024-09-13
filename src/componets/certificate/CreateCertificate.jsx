@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import { useNavigate, Link } from 'react-router-dom'; // Import Link for navigation
 import { PDFViewer } from '@react-pdf/renderer';
 import MyDocument from '../../Document';
 import { db } from '../../firebase-config';
 import { collection, addDoc } from 'firebase/firestore';
 import { auth } from '../../firebase-config';
 
-const Certificate = () => {
+const Certificate = ({ isAdmin }) => {
     const navigate = useNavigate(); // Initialize useNavigate
     const [name, setName] = useState("John Doe");
     const [instructorSignature, setInstructorSignature] = useState("Jane Smith");
@@ -77,8 +77,13 @@ const Certificate = () => {
     return (
         <div className='flex flex-col md:flex-row items-start justify-center gap-8 p-4 bg-gradient-to-r from-blue-100 to-purple-100'>
             <div className='w-full md:w-1/2 p-6 rounded-lg shadow-lg bg-white'>
+                <div className='flex justify-between items-center mb-6'>
+                    <h2 className='text-2xl font-bold text-indigo-800'>Certificate Details</h2>
+                    <Link to={isAdmin ? "/admin/certificates" : "/"} className='bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700'>
+                        Home
+                    </Link>
+                </div>
                 <form className='space-y-6'>
-                    <h2 className='text-2xl font-bold text-indigo-800 mb-6'>Certificate Details</h2>
                     <div>
                         <label htmlFor='name' className='block text-sm font-medium text-indigo-700'>
                             Recipient's Name
@@ -271,6 +276,7 @@ const Certificate = () => {
                         directorSignature={directorSignature}
                         selectedLogo={selectedLogo}
                         selectedBorder={selectedBorder}
+                        isAdmin={isAdmin}
                     />
                 </PDFViewer>
             </div>

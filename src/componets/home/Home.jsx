@@ -5,6 +5,7 @@ import { auth } from '../../firebase-config';
 import { db } from '../../firebase-config';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
+import { CirclePlus } from "lucide-react"
 
 import CertificateCard from './CertificateCard';
 
@@ -42,7 +43,7 @@ function Home({ isAdmin }) {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <div className="flex justify-between items-center p-4 mx-4 mt-5 rounded-lg shadow-md bg-white mb-8">
+      <div className="flex justify-between items-center p-4 mx-4 mt-5 rounded-lg shadow-md bg-white">
         <h1 className="text-3xl font-bold">My Certificates</h1>
         <div className="flex items-center gap-4">
           {isAdmin && (
@@ -62,6 +63,12 @@ function Home({ isAdmin }) {
               {certificates.map(certificate => (
                 <CertificateCard key={certificate.id} certificate={certificate} />
               ))}
+              <Link to="/certificate/new" className="flex items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+                <div className="text-center">
+                  <CirclePlus size={200} color='#808080' strokeWidth={0.5} />
+                  <div className="font-semibold text-gray-700">Create New Certificate</div>
+                </div>
+              </Link>
             </div>
           </div>
         </div>

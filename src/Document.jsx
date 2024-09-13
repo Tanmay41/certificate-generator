@@ -105,12 +105,12 @@ const styles = StyleSheet.create({
 });
 
 // Create Document Component
-const MyDocument = ({ name, date = new Date().toLocaleDateString(), instructorSignature, directorSignature, courseName, courseDescription, selectedLogo, selectedBorder }) => (
+const MyDocument = ({ name, date = new Date().toLocaleDateString(), instructorSignature, directorSignature, courseName, courseDescription, selectedLogo, selectedBorder, isAdmin }) => (
   <Document>
     <Page size="A4" orientation="landscape" style={styles.page}>
       <View fixed={true}>
         <Image src={selectedBorder} style={styles.backgroundImage} />
-        <Text style={styles.watermark}>certificate-generator</Text>
+        {!isAdmin && <Text style={styles.watermark}>certificate-generator</Text>}
         <View style={styles.header}>
           <Image src={selectedLogo} style={styles.logo} />
         </View>

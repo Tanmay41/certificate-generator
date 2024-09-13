@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom'; // Import useParams to get the certificate ID
+import { useNavigate, useParams, Link } from 'react-router-dom'; // Import Link for the home button
 import { PDFViewer } from '@react-pdf/renderer';
 import MyDocument from '../../Document';
 import { db } from '../../firebase-config';
-import { doc, getDoc, updateDoc } from 'firebase/firestore'; // Import updateDoc for updating documents
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth } from '../../firebase-config';
 
-const EditCertificate = () => {
+const EditCertificate = ({ isAdmin }) => {
     const navigate = useNavigate();
-    const { id } = useParams(); // Get the certificate ID from the URL
+    const { id } = useParams();
     const [name, setName] = useState("");
     const [instructorSignature, setInstructorSignature] = useState("");
     const [directorSignature, setDirectorSignature] = useState("");
@@ -81,7 +81,6 @@ const EditCertificate = () => {
             userId: user ? user.uid : null
         };
         try {
-            // Update the document in Firestore
             await updateDoc(doc(db, "certificates", id), certificateData);
             console.log("Certificate Data Updated");
             setIsModalOpen(true);
@@ -99,8 +98,13 @@ const EditCertificate = () => {
     return (
         <div className='flex flex-col md:flex-row items-start justify-center gap-8 p-4 bg-gradient-to-r from-blue-100 to-purple-100'>
             <div className='w-full md:w-1/2 p-6 rounded-lg shadow-lg bg-white'>
+                <div className='flex justify-between items-center mb-6'>
+                    <h2 className='text-2xl font-bold text-indigo-800'>Edit Certificate Details</h2>
+                    <Link to={isAdmin ? "/admin/certificates" : "/"} className='bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700'>
+                        Home
+                    </Link>
+                </div>
                 <form className='space-y-6'>
-                    <h2 className='text-2xl font-bold text-indigo-800 mb-6'>Edit Certificate Details</h2>
                     <div>
                         <label htmlFor='name' className='block text-sm font-medium text-indigo-700'>
                             Recipient's Name
@@ -293,6 +297,7 @@ const EditCertificate = () => {
                         directorSignature={directorSignature}
                         selectedLogo={selectedLogo}
                         selectedBorder={selectedBorder}
+                        isAdmin={isAdmin}
                     />
                 </PDFViewer>
             </div>
@@ -317,4 +322,3 @@ const EditCertificate = () => {
 };
 
 export default EditCertificate;
-
