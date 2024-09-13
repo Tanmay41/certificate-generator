@@ -39,7 +39,7 @@ const Certificates = () => {
       
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 mt-6">
         {certificates.map(certificate => (
-            <CertificateCard key={certificate.id} certificate={{id: "/admin/certificate/" + certificate.id, ...certificate}} isAdmin={true} />
+            <CertificateCard key={certificate.id} certificate={{id: "/admin/certificate/" + certificate.id, ...certificate}} />
         ))}
         <Link to="/certificate/new" className="flex items-center justify-center p-6 bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
           <div className="text-center">

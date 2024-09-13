@@ -4,7 +4,7 @@ import { Trash2 } from 'lucide-react';
 import { db } from '../../firebase-config';
 import { doc, deleteDoc } from 'firebase/firestore';
 
-const CertificateCard = ({ certificate, isAdmin, onDelete }) => {
+const CertificateCard = ({ certificate, onDelete }) => {
   const certificateId = certificate.id;
 
   const handleDelete = async (e) => {
@@ -32,14 +32,12 @@ const CertificateCard = ({ certificate, isAdmin, onDelete }) => {
           <div className="p-6">
             <div className="flex items-center justify-between mb-3">
               <h1 className="text-2xl font-bold text-indigo-700">{certificate.name}</h1>
-              {isAdmin && (
                 <button
                   className="bg-white p-2 rounded hover:bg-red-200 transition-colors duration-500 border border-gray-200"
                   onClick={handleDelete}
                 >
                   <Trash2 size={20} />
                 </button>
-              )}
             </div>
             <div className="space-y-2">
               <p className="text-gray-600"><span className="font-semibold">Course:</span> {certificate.courseName}</p>
