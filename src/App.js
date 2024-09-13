@@ -17,7 +17,7 @@ function App() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      setIsAdmin(admins.admins === currentUser?.email);
+      setIsAdmin(admins.admins.includes(currentUser?.email));
       setLoading(false);
     });
 
