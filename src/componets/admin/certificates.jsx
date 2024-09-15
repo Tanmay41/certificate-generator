@@ -62,13 +62,13 @@ const Certificates = () => {
       {viewMode === 'list' ? (
         <div className="bg-white rounded-lg shadow-md overflow-hidden">
           {certificates.map(certificate => (
-            <CertificateCard key={certificate.id} certificate={{id: "/admin/certificate/" + certificate.id, ...certificate}} list={true} />
+            <CertificateCard key={certificate.id} certificate={{id: "/admin/certificate/" + certificate.id, ...certificate}} list={true} isAdmin={true} />
           ))}
         </div>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {certificates.map(certificate => (
-            <CertificateCard key={certificate.id} certificate={{id: "/admin/certificate/" + certificate.id, ...certificate}} list={false} />
+            <CertificateCard key={certificate.id} certificate={{id: "/admin/certificate/" + certificate.id, ...certificate}} list={false} isAdmin={true} />
           ))}
         </div>
       )}

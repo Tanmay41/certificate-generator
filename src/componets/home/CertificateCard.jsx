@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Trash2, Edit, MoreHorizontal } from 'lucide-react';
+import { Trash2, Edit, MoreHorizontal, ShoppingCart, X } from 'lucide-react';
 import { db } from '../../firebase-config';
 import { doc, deleteDoc } from 'firebase/firestore';
 
-const CertificateCard = ({ certificate, onDelete, list }) => {
+const CertificateCard = ({ certificate, onDelete, list, isAdmin }) => {
   const [showDropdown, setShowDropdown] = useState(false);
+  const [showPaywall, setShowPaywall] = useState(false);
   const certificateId = certificate.id;
 
   const handleDelete = async (e) => {
@@ -31,6 +32,22 @@ const CertificateCard = ({ certificate, onDelete, list }) => {
     setShowDropdown(!showDropdown);
   };
 
+  const handleBuyNow = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setShowPaywall(true);
+  };
+
+  const closePaywall = () => {
+    setShowPaywall(false);
+  };
+
+  const handlePurchase = () => {
+    // Implement purchase logic here
+    console.log('Purchase completed for certificate:', certificateId);
+    closePaywall();
+  };
+
   return (
     <div className="relative">
       <Link to={`/certificate/${certificateId}`} className="block">
@@ -42,6 +59,15 @@ const CertificateCard = ({ certificate, onDelete, list }) => {
                 <p className="text-gray-600 text-sm">{certificate.name} • {certificate.courseName} • {certificate.instructorSignature}</p>
               </div>
               <div className="flex items-center space-x-4">
+                {!isAdmin && (
+                  <button
+                    className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-300"
+                    onClick={handleBuyNow}
+                  >
+                    <ShoppingCart size={16} className="inline mr-2" />
+                    Buy Now
+                  </button>
+                )}
                 <button
                   className="bg-white p-2 rounded hover:bg-gray-200 transition-colors duration-500 border border-gray-200"
                   onClick={toggleDropdown}
@@ -66,12 +92,23 @@ const CertificateCard = ({ certificate, onDelete, list }) => {
             <>
               <div className="flex items-center justify-between mb-3">
                 <h1 className="text-2xl font-bold text-indigo-700">{certificate.name}</h1>
-                <button
-                  className="bg-white p-2 rounded hover:bg-red-200 transition-colors duration-500 border border-gray-200"
-                  onClick={handleDelete}
-                >
-                  <Trash2 size={20} />
-                </button>
+                <div className="flex items-center space-x-2">
+                  {!isAdmin && (
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition-colors duration-300"
+                      onClick={handleBuyNow}
+                    >
+                      <ShoppingCart size={20} className="inline mr-2" />
+                      Buy Now
+                    </button>
+                  )}
+                  <button
+                    className="bg-white p-2 rounded hover:bg-red-200 transition-colors duration-500 border border-gray-200"
+                    onClick={handleDelete}
+                  >
+                    <Trash2 size={20} />
+                  </button>
+                </div>
               </div>
               <div className="space-y-2">
                 <p className="text-gray-600"><span className="font-semibold">Course:</span> {certificate.courseName}</p>
@@ -86,6 +123,34 @@ const CertificateCard = ({ certificate, onDelete, list }) => {
           )}
         </div>
       </Link>
+
+      {showPaywall && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-8 w-1/2 max-w-[50vw]">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-indigo-700">Purchase Certificate</h2>
+              <button onClick={closePaywall} className="text-gray-500 hover:text-gray-700">
+                <X size={24} />
+              </button>
+            </div>
+            <div className="mb-6">
+              <h3 className="text-xl font-semibold mb-2">{certificate.name}</h3>
+              <p className="text-gray-600 mb-4">{certificate.courseName}</p>
+              <p className="text-2xl font-bold text-green-600">$99.99</p>
+            </div>
+            <div className="space-y-4">
+              <input type="text" placeholder="Card Number" className="w-full p-2 border rounded" />
+              <div className="flex space-x-4">
+                <input type="text" placeholder="MM/YY" className="w-1/2 p-2 border rounded" />
+                <input type="text" placeholder="CVC" className="w-1/2 p-2 border rounded" />
+              </div>
+              <button onClick={handlePurchase} className="w-full bg-indigo-600 text-white py-2 rounded hover:bg-indigo-700 transition-colors duration-300">
+                Complete Purchase
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
